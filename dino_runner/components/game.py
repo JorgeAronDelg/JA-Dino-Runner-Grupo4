@@ -1,5 +1,7 @@
 from components.dinosaur import Dinosaur
+from components.bird import Bird
 import pygame
+from components.obstacle_manager import ObstacleManager
 
 from utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
 
@@ -13,6 +15,8 @@ class Game:
         self.clock = pygame.time.Clock()
         self.playing = False
         self.dino = Dinosaur()
+        self.bird = Bird()
+        self.obstacle_manager = ObstacleManager()
         self.game_speed = 20
         self.x_pos_bg = 0
         self.y_pos_bg = 380
@@ -32,12 +36,21 @@ class Game:
                 self.playing = False
 
     def update(self):
-        self.dino.update()
+        #nos devuelve que tecla se presiono
+        user_input = pygame.key.get_pressed()
+
+        self.dino.update(user_input)
+
+        self.bird.update()
+
+        self.obstacle_manager.update()
+
     def draw(self):
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
-        self.dino.draw(self.screen)
+        self.X_POS = self.dino.draw(self.screen)
+        self.obstacle_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
 
@@ -49,3 +62,5 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+        self.bird.draw(self.screen)
+ 
